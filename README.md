@@ -29,5 +29,6 @@ If you need to support other languages, translate the contents of `en_us.yml` in
 
 ## 捐助
 你可以使用支付宝或微信支付向我捐助
+
 ![支付宝](https://i.loli.net/2019/01/16/5c3f314f7589f.png)
 ![微信支付](https://i.loli.net/2019/01/16/5c3f314fa2a19.png)
