@@ -26,3 +26,8 @@ If you need to support other languages, translate the contents of `en_us.yml` in
 如果需要切换语言，请删除插件目录下默认生成的`en_us.yml`，并把`config.yml`中的`language`项的值修改为`zh_cn`或`zh_tw`，然后重启插件即可（可以使用plugman等插件重载）
 
 如果你需要支持其他语言，请将`en_us.yml`中的内容翻译为其他语言，然后新增一个`.yml`文件，并将`config.yml`中的`language`项的值修改为新增的yml文件的文件名即可
+
+## 捐助
+你可以使用支付宝或微信支付向我捐助
+![支付宝](https://i.loli.net/2019/01/16/5c3f314f7589f.png)
+![微信支付](https://i.loli.net/2019/01/16/5c3f314fa2a19.png)
