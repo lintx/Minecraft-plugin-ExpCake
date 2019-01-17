@@ -1,8 +1,11 @@
 package org.lintx.mincraft.plugins.expcake.config;
 
 import org.lintx.mincraft.plugins.expcake.ExpCakePlugin;
+import org.lintx.mincraft.plugins.expcake.Util;
 import org.lintx.plugins.modules.configure.Configure;
 import org.lintx.plugins.modules.configure.YamlConfig;
+
+import java.util.ListIterator;
 
 
 @YamlConfig
@@ -46,7 +49,7 @@ public class Config {
                     language.title = "§e经验蛋糕";
 
                     language.lore.add("§r§5将普通蛋糕和青金石放进铁砧");
-                    language.lore.add("§r§5并花费§e"+ experience +"§5点经验值制作而成.");
+                    language.lore.add("§r§5并花费§e%experience%§5点经验值制作而成.");
                     language.lore.add("");
                     language.lore.add("§r§5放置后右键使用可以将存储的经验吸收.");
                     language.lore.add("§r§5拿着§6[经验修补]§5附魔的物品使用可以修理装备或工具.");
@@ -60,7 +63,7 @@ public class Config {
                     language.title = "§e經驗蛋糕";
 
                     language.lore.add("§r§5將普通蛋糕和青金石放進鐵砧");
-                    language.lore.add("§r§5並花費§e"+ experience +"§5點經驗值製作而成.");
+                    language.lore.add("§r§5並花費§e%experience%§5點經驗值製作而成.");
                     language.lore.add("");
                     language.lore.add("§r§5放置後右鍵使用可以將存儲的經驗吸收.");
                     language.lore.add("§r§5拿著§6[修補]§5附魔的物品使用可以修理裝備或工具.");
@@ -75,7 +78,7 @@ public class Config {
 
                     language.lore.add("§r§5Put a cake and");
                     language.lore.add("§r§5  Lapis Lazuli into the anvil");
-                    language.lore.add("§r§5And cost §e"+ experience +"§5 exp to make one.");
+                    language.lore.add("§r§5And cost §e%experience%§5 exp to make one.");
                     language.lore.add("");
                     language.lore.add("§r§5After placing it,");
                     language.lore.add("§r§5  right click to absorb");
@@ -88,6 +91,11 @@ public class Config {
                     language.isexpcake = "§fThis is a ExpCake, %experience% experience inside.";
                 }
                 Configure.bukkitSave(ExpCakePlugin.getPlugin(),language,lang+".yml");
+            }
+            ListIterator<String> lore = language.lore.listIterator();
+            while (lore.hasNext()){
+                String str = lore.next();
+                lore.set(Util.formatMessage(str));
             }
             Config.language = language;
         }

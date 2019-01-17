@@ -25,7 +25,7 @@ public class Util {
     private static ItemStack newExpCake(){
         ItemStack cake = new ItemStack(Material.CAKE);
         ItemMeta meta = cake.getItemMeta();
-        meta.setDisplayName(Config.getInstance().lang().title);
+        meta.setDisplayName(formatMessage(Config.getInstance().lang().title));
         meta.setLore(Config.getInstance().lang().lore);
 
         meta.addItemFlags(cakeFlag);
@@ -51,7 +51,7 @@ public class Util {
         return item !=null && item.isSimilar(getExpCake());
     }
 
-    private static int getPlayerExp(Player player){
+    static int getPlayerExp(Player player){
         int level = player.getLevel();
         float exp = player.getExp();
         int total = getLevelTotalExp(level);
@@ -97,7 +97,7 @@ public class Util {
     static boolean minusExp(Player player){
         int exp = getPlayerExp(player);
         if (exp<Config.getInstance().experience){
-            sendTitleMessage(player,Config.getInstance().lang().noexp.replaceAll("%experience%", String.valueOf(Config.getInstance().experience)),70);
+            sendTitleMessage(player,formatMessage(Config.getInstance().lang().noexp),70);
             return false;
         }
         setPlayerExp(player,exp-Config.getInstance().experience);
@@ -129,5 +129,13 @@ public class Util {
 
     static void unload(){
         expCake = null;
+    }
+
+    public static String formatMessage(String message){
+        return formatMessage(message,Config.getInstance().experience);
+    }
+
+    static String formatMessage(String message, int exp){
+        return message.replaceAll("%experience%", String.valueOf(exp));
     }
 }

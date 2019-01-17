@@ -44,7 +44,6 @@ public class ExpCakeEvent implements Listener {
                 }
             }
         }
-
     }
 
     /**
@@ -65,6 +64,7 @@ public class ExpCakeEvent implements Listener {
                         event.setCancelled(true);
                         boolean done = Util.minusExp(player);
                         if (done){
+                            player.playSound(player.getLocation(), Sound.BLOCK_ANVIL_USE,SoundCategory.BLOCKS,1.0f,1.0f);
                             anvilInventory.setItem(0,null);
                             if (itemStack1.getAmount()==1){
                                 anvilInventory.setItem(1,null);
@@ -92,7 +92,6 @@ public class ExpCakeEvent implements Listener {
         if (itemStack!=null && Util.isExpCake(itemStack)){
             Block block = event.getBlockPlaced();
             if (block!=null){
-
                 if (block.getBlockData() instanceof Cake){
                     FixedMetadataValue value = new FixedMetadataValue(ExpCakePlugin.getPlugin(), Config.getInstance().experience);
                     block.setMetadata("exp",value);
@@ -127,7 +126,8 @@ public class ExpCakeEvent implements Listener {
                 }
             }
             if (event.getAction()==Action.LEFT_CLICK_BLOCK){
-                Util.sendTitleMessage(player, Config.getInstance().lang().isexpcake.replaceAll("%experience%", String.valueOf(totalExp)),30);
+                Util.sendTitleMessage(player, Util.formatMessage(Config.getInstance().lang().isexpcake,totalExp),30);
+                player.playSound(block.getLocation(), Sound.UI_TOAST_IN,SoundCategory.BLOCKS,0.3f, 1.0F);
             }
             else{
                 if (player.getSaturation()<20.0f) player.setSaturation(Math.min(player.getSaturation() + 0.4f,20.0f));
@@ -154,7 +154,7 @@ public class ExpCakeEvent implements Listener {
                 if (getExp==0){
                     return;
                 }
-                player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP,1.0f,1.0f);
+                player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP,SoundCategory.PLAYERS,1.0f, (float) Math.random());
                 if (event.hasItem()){
                     ItemStack item = event.getItem();
                     if (item.getEnchantmentLevel(Enchantment.MENDING)>0){
