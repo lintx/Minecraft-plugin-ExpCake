@@ -130,6 +130,9 @@ public class ExpCakeEvent implements Listener {
                 if (!player.getGameMode().equals(GameMode.SURVIVAL) && !player.getGameMode().equals(GameMode.ADVENTURE)){
                     return;
                 }
+                if (player.getSaturation()<20.0f) player.setSaturation(Math.min(player.getSaturation() + 0.4f,20.0f));
+                if (player.getFoodLevel()<20) player.setFoodLevel(Math.min(player.getFoodLevel() + 2,20));
+
                 Cake cakeData = (Cake) block.getBlockData();
                 int i = cakeData.getBites();
                 if (i < 6){
@@ -155,6 +158,7 @@ public class ExpCakeEvent implements Listener {
                     block.setMetadata("exp",value);
                 }
                 else {
+                    block.removeMetadata("exp",ExpCakePlugin.getPlugin());
                     block.setBlockData(Bukkit.createBlockData(Material.AIR));
                     block.setType(Material.AIR);
                 }
