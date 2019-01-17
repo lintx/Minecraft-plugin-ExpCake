@@ -17,7 +17,6 @@ public class Util {
     private static ItemStack expCake;
     private final static ItemFlag cakeFlag = ItemFlag.HIDE_ENCHANTS;
     private final static Enchantment cakeEnchant = Enchantment.DURABILITY;
-    public final static int experience = 1395;
 
     static boolean isCake(ItemStack item){
         return item !=null && item.isSimilar(itemCake);
@@ -30,7 +29,7 @@ public class Util {
         meta.setLore(Config.getInstance().lang().lore);
 
         meta.addItemFlags(cakeFlag);
-        meta.addEnchant(cakeEnchant,experience,true);
+        meta.addEnchant(cakeEnchant,Config.getInstance().experience,true);
 
         cake.setItemMeta(meta);
 
@@ -97,11 +96,11 @@ public class Util {
 
     static boolean minusExp(Player player){
         int exp = getPlayerExp(player);
-        if (exp<experience){
-            sendTitleMessage(player,Config.getInstance().lang().noexp,70);
+        if (exp<Config.getInstance().experience){
+            sendTitleMessage(player,Config.getInstance().lang().noexp.replaceAll("%experience%", String.valueOf(Config.getInstance().experience)),70);
             return false;
         }
-        setPlayerExp(player,exp-experience);
+        setPlayerExp(player,exp-Config.getInstance().experience);
         return true;
     }
 

@@ -15,6 +15,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.PrepareAnvilEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.AnvilInventory;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -93,7 +94,7 @@ public class ExpCakeEvent implements Listener {
             if (block!=null){
 
                 if (block.getBlockData() instanceof Cake){
-                    FixedMetadataValue value = new FixedMetadataValue(ExpCakePlugin.getPlugin(), Util.experience);
+                    FixedMetadataValue value = new FixedMetadataValue(ExpCakePlugin.getPlugin(), Config.getInstance().experience);
                     block.setMetadata("exp",value);
                 }
             }
@@ -110,57 +111,48 @@ public class ExpCakeEvent implements Listener {
         if (event.isCancelled()) return;
         Player player = event.getPlayer();
         if (player.isSneaking()) return;
+        if (event.getHand()!=EquipmentSlot.HAND) return;
+
         Block block = event.getClickedBlock();
         if (Util.isExpCakeBlock(block)){
             event.setCancelled(true);
             event.setUseInteractedBlock(Event.Result.DENY);
-            if (event.getAction()==Action.LEFT_CLICK_BLOCK){
-                Util.sendTitleMessage(player, Config.getInstance().lang().isexpcake,30);
-            }
-            else{
-                Integer exp = 0;
-                for (MetadataValue value:block.getMetadata("exp")){
-                    if (value instanceof FixedMetadataValue){
-                        FixedMetadataValue v = (FixedMetadataValue)value;
-                        if (v.value() instanceof Integer){
-                            exp = (Integer)v.value();
-                        }
+            Integer totalExp = 0;
+            for (MetadataValue value:block.getMetadata("exp")){
+                if (value instanceof FixedMetadataValue){
+                    FixedMetadataValue v = (FixedMetadataValue)value;
+                    if (v.value() instanceof Integer){
+                        totalExp = (Integer)v.value();
                     }
                 }
-                if (!player.getGameMode().equals(GameMode.SURVIVAL) && !player.getGameMode().equals(GameMode.ADVENTURE)){
-                    return;
-                }
+            }
+            if (event.getAction()==Action.LEFT_CLICK_BLOCK){
+                Util.sendTitleMessage(player, Config.getInstance().lang().isexpcake.replaceAll("%experience%", String.valueOf(totalExp)),30);
+            }
+            else{
                 if (player.getSaturation()<20.0f) player.setSaturation(Math.min(player.getSaturation() + 0.4f,20.0f));
                 if (player.getFoodLevel()<20) player.setFoodLevel(Math.min(player.getFoodLevel() + 2,20));
 
                 Cake cakeData = (Cake) block.getBlockData();
                 int i = cakeData.getBites();
+                int getExp = 0;
                 if (i < 6){
                     cakeData.setBites(i+1);
                     block.setBlockData(cakeData);
-                }
-                else {
-                    block.setBlockData(Bukkit.createBlockData(Material.AIR));
-                    block.setType(Material.AIR);
-                }
-                int getExp = 0;
-                if (i<5){
-                    getExp = 199;
-                }
-                else {
-                    getExp = 200;
-                }
-                if (getExp>exp){
-                    getExp = exp;
-                }
-                if (exp-getExp>0){
-                    FixedMetadataValue value = new FixedMetadataValue(ExpCakePlugin.getPlugin(), exp-getExp);
+                    getExp = (int) Math.floor(totalExp/(7.0f-i));
+
+                    FixedMetadataValue value = new FixedMetadataValue(ExpCakePlugin.getPlugin(), totalExp-getExp);
                     block.setMetadata("exp",value);
                 }
                 else {
+                    getExp = totalExp;
+
                     block.removeMetadata("exp",ExpCakePlugin.getPlugin());
                     block.setBlockData(Bukkit.createBlockData(Material.AIR));
                     block.setType(Material.AIR);
+                }
+                if (getExp==0){
+                    return;
                 }
                 player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP,1.0f,1.0f);
                 if (event.hasItem()){
@@ -169,16 +161,18 @@ public class ExpCakeEvent implements Listener {
                         ItemMeta meta = item.getItemMeta();
                         if (meta instanceof Damageable){
                             int damage = ((Damageable)meta).getDamage();
-                            if (damage>=getExp){
-                                damage -= getExp;
-                                getExp = 0;
+                            if (damage>0){
+                                if (damage>=getExp){
+                                    damage -= getExp;
+                                    getExp = 0;
+                                }
+                                else {
+                                    getExp -= damage;
+                                    damage = 0;
+                                }
+                                ((Damageable)meta).setDamage(damage);
+                                item.setItemMeta(meta);
                             }
-                            else {
-                                getExp -= damage;
-                                damage = 0;
-                            }
-                            ((Damageable)meta).setDamage(damage);
-                            item.setItemMeta(meta);
                         }
                     }
                 }

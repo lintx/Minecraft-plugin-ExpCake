@@ -1,6 +1,6 @@
 name: ExpCake
 main: org.lintx.mincraft.plugins.expcake.ExpCakePlugin
-version: 1.1
+version: 1.2
 api-version: 1.13
 softdepend:
   - ConfigureCore
