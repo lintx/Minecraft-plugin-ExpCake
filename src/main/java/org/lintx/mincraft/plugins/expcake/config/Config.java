@@ -70,20 +70,19 @@ public class Config {
                 else {
                     language.title = "§eExpCake";
 
-                    language.lore.add("§r§5Put ordinary cake and lapis");
-                    language.lore.add("§r§5  lazuli into the anvil");
-                    language.lore.add("§r§5And made §e"+ Util.experience +"§5 experience.");
+                    language.lore.add("§r§5Put a cake and");
+                    language.lore.add("§r§5  Lapis Lazuli into the anvil");
+                    language.lore.add("§r§5And cost §e"+ Util.experience +"§5 exp to make one.");
                     language.lore.add("");
                     language.lore.add("§r§5After placing it,");
-                    language.lore.add("§r§5  use the right button to");
-                    language.lore.add("§r§5  absorb the stored experience.");
-                    language.lore.add("§r§5Use §6[ Mending ] §5enchanted");
-                    language.lore.add("§r§5  items to repair equipment.");
+                    language.lore.add("§r§5  right click to absorb");
+                    language.lore.add("§r§5  the stored experience.");
+                    language.lore.add("§r§5Can also repair §6[ Mending ] §5enchanted equipments.");
                     language.lore.add("");
-                    language.lore.add("§r§cDestroy the ExpCake square will get nothing.");
+                    language.lore.add("§r§cDestroy the ExpCake block will get nothing.");
 
-                    language.noexp = "§cIt takes "+ Util.experience +" experience points to make a ExpCake, and your experience is not enough.";
-                    language.isexpcake = "§fThis cake is a ExpCake.";
+                    language.noexp = "§cNot enough exp. You need "+ Util.experience +" exp to make one.";
+                    language.isexpcake = "§fThis is a ExpCake.";
                 }
                 Configure.bukkitSave(ExpCakePlugin.getPlugin(),language,lang+".yml");
             }
