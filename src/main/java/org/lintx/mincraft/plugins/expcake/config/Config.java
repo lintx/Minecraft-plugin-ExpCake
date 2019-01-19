@@ -83,7 +83,7 @@ public class Config {
                     language.lore.add("§r§5After placing it,");
                     language.lore.add("§r§5  right click to absorb");
                     language.lore.add("§r§5  the stored experience.");
-                    language.lore.add("§r§5Can also repair §6[ Mending ] §5enchanted equipments.");
+                    language.lore.add("§r§5Can also repair §6[ Mending ] §5enchanted equipment.");
                     language.lore.add("");
                     language.lore.add("§r§cDestroy the ExpCake block will get nothing.");
 
