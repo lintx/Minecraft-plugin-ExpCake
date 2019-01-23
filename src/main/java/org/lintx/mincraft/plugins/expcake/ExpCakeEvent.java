@@ -50,9 +50,8 @@ public class ExpCakeEvent implements Listener {
      * get the expcake from invil
      * @param event
      */
-    @EventHandler(priority= EventPriority.HIGH)
+    @EventHandler(priority= EventPriority.HIGH,ignoreCancelled = true)
     public void onInventoryClick(InventoryClickEvent event){
-        if (event.isCancelled()) return;
         if (event.getWhoClicked() instanceof Player){
             Player player = (Player)event.getWhoClicked();
             if (event.getClickedInventory() instanceof AnvilInventory && event.getSlot()==2){
@@ -85,9 +84,8 @@ public class ExpCakeEvent implements Listener {
      * place the expcake
      * @param event
      */
-    @EventHandler
+    @EventHandler(priority = EventPriority.LOWEST,ignoreCancelled = true)
     public void onBlockPlace(BlockPlaceEvent event){
-        if (!event.canBuild()) return;
         ItemStack itemStack = event.getItemInHand();
         if (itemStack!=null && Util.isExpCake(itemStack)){
             Block block = event.getBlockPlaced();
@@ -104,10 +102,9 @@ public class ExpCakeEvent implements Listener {
      * eat expcake or checking a cake is not an expcake
      * @param event
      */
-    @EventHandler(priority = EventPriority.HIGH)
+    @EventHandler(priority = EventPriority.LOWEST,ignoreCancelled = true)
     public void onPlayerInteract(PlayerInteractEvent event){
         if (event.getAction()!= Action.RIGHT_CLICK_BLOCK && event.getAction()!=Action.LEFT_CLICK_BLOCK) return;
-        if (event.isCancelled()) return;
         Player player = event.getPlayer();
         if (player.isSneaking()) return;
         if (event.getHand()!=EquipmentSlot.HAND) return;
