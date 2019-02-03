@@ -27,6 +27,12 @@ If you need to support other languages, translate the contents of `en_us.yml` in
 
 如果你需要支持其他语言，请将`en_us.yml`中的内容翻译为其他语言，然后新增一个`.yml`文件，并将`config.yml`中的`language`项的值修改为新增的yml文件的文件名即可
 
+## API
+#### Event
+`PlayerPlaceExpCakeEvent`
+
+`PlayerEatExpCakeEvent`
+
 ## 捐助
 你可以使用支付宝或微信支付向我捐助
 
