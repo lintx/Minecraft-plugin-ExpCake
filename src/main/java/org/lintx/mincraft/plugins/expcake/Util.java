@@ -51,6 +51,21 @@ public class Util {
         return item !=null && item.isSimilar(getExpCake());
     }
 
+    static int getExpCakeExp(ItemStack item){
+        if (item==null || !item.hasItemMeta()) return -1;
+        if (!item.getType().equals(Material.CAKE)) return -2;
+        ItemMeta meta = item.getItemMeta();
+        if (!meta.hasItemFlag(cakeFlag)
+                || meta.hasItemFlag(ItemFlag.HIDE_DESTROYS)
+                || meta.hasItemFlag(ItemFlag.HIDE_PLACED_ON)
+                || meta.hasItemFlag(ItemFlag.HIDE_ATTRIBUTES)
+                || meta.hasItemFlag(ItemFlag.HIDE_UNBREAKABLE)
+                || meta.hasItemFlag(ItemFlag.HIDE_POTION_EFFECTS)
+        ) return -3;
+        if (!meta.hasEnchant(cakeEnchant)) return -4;
+        return meta.getEnchantLevel(cakeEnchant);
+    }
+
     static int getPlayerExp(Player player){
         int level = player.getLevel();
         float exp = player.getExp();

@@ -10,6 +10,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.PrepareAnvilEvent;
@@ -21,6 +22,9 @@ import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.metadata.MetadataValue;
+import org.lintx.mincraft.plugins.expcake.Event.PlayerEatExpCakeEvent;
+import org.lintx.mincraft.plugins.expcake.Event.PlayerPlaceExpCakeEvent;
+import org.lintx.mincraft.plugins.expcake.Helper.CoreProtectHelper;
 import org.lintx.mincraft.plugins.expcake.config.Config;
 
 public class ExpCakeEvent implements Listener {
@@ -87,14 +91,33 @@ public class ExpCakeEvent implements Listener {
     @EventHandler(priority = EventPriority.LOWEST,ignoreCancelled = true)
     public void onBlockPlace(BlockPlaceEvent event){
         ItemStack itemStack = event.getItemInHand();
-        if (itemStack!=null && Util.isExpCake(itemStack)){
+        int exp = Util.getExpCakeExp(itemStack);
+        if (itemStack!=null && exp>0){
             Block block = event.getBlockPlaced();
             if (block!=null){
                 if (block.getBlockData() instanceof Cake){
+                    PlayerPlaceExpCakeEvent placeCakeEvent = new PlayerPlaceExpCakeEvent(event.getPlayer(),block,exp);
+                    ExpCakePlugin.getPlugin().getServer().getPluginManager().callEvent(placeCakeEvent);
+                    if (placeCakeEvent.isCancelled()){
+                        event.setCancelled(true);
+                        return;
+                    }
                     FixedMetadataValue value = new FixedMetadataValue(ExpCakePlugin.getPlugin(), Config.getInstance().experience);
                     block.setMetadata("exp",value);
                 }
             }
+        }
+    }
+
+    /**
+     * break the expcake
+     * @param event
+     */
+    @EventHandler(priority = EventPriority.LOWEST,ignoreCancelled = true)
+    public void onBlockBreak(BlockBreakEvent event){
+        Block block = event.getBlock();
+        if (Util.isExpCakeBlock(block)){
+            block.removeMetadata("exp",ExpCakePlugin.getPlugin());
         }
     }
 
@@ -132,7 +155,7 @@ public class ExpCakeEvent implements Listener {
 
                 Cake cakeData = (Cake) block.getBlockData();
                 int i = cakeData.getBites();
-                int getExp = 0;
+                int getExp;
                 if (i < 6){
                     cakeData.setBites(i+1);
                     block.setBlockData(cakeData);
@@ -150,6 +173,17 @@ public class ExpCakeEvent implements Listener {
                 }
                 if (getExp==0){
                     return;
+                }
+
+                PlayerEatExpCakeEvent eatCakeEvent = new PlayerEatExpCakeEvent(player,totalExp,getExp);
+                ExpCakePlugin.getPlugin().getServer().getPluginManager().callEvent(eatCakeEvent);
+                if (eatCakeEvent.isCancelled()) return;
+
+                try {
+                    CoreProtectHelper.logUseCake(player,block.getLocation());
+                }
+                catch (Exception igone){
+
                 }
                 player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP,SoundCategory.PLAYERS,1.0f, (float) Math.random());
                 if (event.hasItem()){
